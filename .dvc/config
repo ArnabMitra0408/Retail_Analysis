@@ -1,0 +1,4 @@
+[core]
+    remote = remotes3dvc
+['remote "remotes3dvc"']
+    url = s3://retail-data-store-project
