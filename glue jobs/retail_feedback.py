@@ -16,24 +16,28 @@ spark = glueContext.spark_session
 job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 
+POSTGRES_ENDPOINT=""
+DB_USERNAME=""
+DB_PASSWORD=""
+S3_BUCKET_NAME=""
 
-# Read CSV from S3
+rds_url = f"jdbc:postgresql://"+POSTGRES_ENDPOINT 
+rds_properties = {
+    "user": DB_USERNAME,
+    "password": DB_PASSWORD,
+    "driver": "org.postgresql.Driver"
+}
+
+
 inputGDF = glueContext.create_dynamic_frame_from_options(
     connection_type="s3",
     format="csv",
-    connection_options={"paths": ["s3://retail-data-store-project/"], "recurse": True},
+    connection_options={"paths": [f"s3://"+S3_BUCKET_NAME], "recurse": True},
     format_options={"withHeader": True}
 )
 
-# Show the schema and preview the data
 retail_data=inputGDF.toDF()
 
-rds_url = "jdbc:postgresql://retail-datawarehouse.cd2s06y4oid6.us-east-2.rds.amazonaws.com:5432/Retail"
-rds_properties = {
-    "user": "arnab0408",
-    "password": "arnab0408",
-    "driver": "org.postgresql.Driver"
-}
 feedback=retail_data.na.drop().filter(trim(col('feedback')) != '').select('feedback').distinct().collect()
 feedback=[row['feedback'] for row in feedback]
 

@@ -66,6 +66,9 @@ create table shipping_method(
 	method_id SERIAL primary key,
 	method_name varchar(255) not null
 );
+ALTER TABLE shipping_method RENAME COLUMN method_id TO shipping_method_id;
+alter table shipping_method rename column method_name to shipping_method_name;
+
 
 create table customer_segment(
 	segment_id SERIAL primary key,
@@ -98,8 +101,18 @@ FOREIGN KEY (method_id) REFERENCES shipping_method(method_id)
 
 ALTER TABLE sales ADD COLUMN segment_id INT REFERENCES customer_segment(segment_id);
 
+ALTER TABLE sales ADD COLUMN payment_method_id INT REFERENCES payment_method(method_id);
+
+alter table location add column country varchar(255)
 
 
-select * from customer_segment cs 
+SELECT pg_get_serial_sequence('customer', 'cust_id');
 
+ALTER SEQUENCE customer_cust_id_seq RESTART WITH 1;
 
+alter table sales add column Transaction_ID float 
+alter table sales add column Ratings float
+alter table sales add column Trasact_Date Date
+select * from income i 
+
+select * from sales s  
